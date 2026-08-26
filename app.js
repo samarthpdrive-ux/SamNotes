@@ -176,7 +176,7 @@ $('themeBtn').onclick=()=>{const dark=!document.body.classList.contains('dark-mo
 if(localStorage.getItem('samarth-vault-theme')==='dark'){$('themeBtn').click()}
 $('homeBtn').onclick=openDashboard;
 $('editModeBtn').onclick=()=>setEditMode(!editMode);
-async function unlockVault(){try{const response=await fetch(`${window.TIDB_API_URL}/api/auth/unlock`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('vaultPassword').value})});const result=await response.json();if(!response.ok||!result.token)throw new Error('Incorrect password');sessionStorage.setItem('samarth-vault-unlocked','yes');sessionStorage.setItem('samarth-vault-token',result.token);$('lockScreen').hidden=true;openDashboard();restoreFromTiDB()}catch{$('lockError').hidden=false}}
+async function unlockVault(){try{const response=await fetch(`${window.TIDB_API_URL}/api/auth`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('vaultPassword').value.trim()})});const result=await response.json();if(!response.ok||!result.token)throw new Error('Incorrect password');sessionStorage.setItem('samarth-vault-unlocked','yes');sessionStorage.setItem('samarth-vault-token',result.token);$('lockScreen').hidden=true;openDashboard();restoreFromTiDB()}catch{$('lockError').hidden=false}}
 $('unlockVaultBtn').onclick=unlockVault;
 $('vaultPassword').addEventListener('keydown',e=>{if(e.key==='Enter')unlockVault()});
 if(sessionStorage.getItem('samarth-vault-unlocked')==='yes'){$('lockScreen').hidden=true;openDashboard()}else document.querySelector('.app-shell').hidden=true;
