@@ -1,7 +1,100 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Samarth Study Vault</title><link rel="stylesheet" href="styles.css"></head><body>
-<section id="lock" class="lock"><form id="loginForm" class="lock-card"><p>PRIVATE LEARNING LIBRARY</p><h1>Samarth’s<br>Study Vault</h1><span>Read, organise and preserve your notes.</span><input id="password" type="password" placeholder="Password" required><button>Open library</button><small id="loginError"></small></form></section>
-<header class="bar"><strong>Samarth’s Study Vault</strong><div><button id="libraryBtn">Library</button><button id="themeBtn">☾</button><button id="editBtn">Edit lesson</button><button id="printBtn">Export PDF</button></div></header>
-<main id="dashboard" class="dashboard" hidden><section class="hero"><p>SAMARTHP2727 · LEARNING MATERIALS</p><h1>A calm home for your notes.</h1><span>Select a subject to open all lessons in reading mode.</span></section><section id="subjectCards" class="cards"></section></main>
-<main id="reader" class="reader" hidden><aside class="sidebar"><button id="backBtn" class="back">← All subjects</button><p id="subjectName">OPERATING SYSTEM</p><select id="lessonSelect"></select><button id="newLessonBtn">+ New lesson</button><div id="cloudState">Cloud ready</div></aside><article class="paper"><p id="crumb">OPERATING SYSTEM · UNIT 1</p><h1 id="titleView"></h1><h2 id="sectionView"></h2><div id="notesView" class="notes"></div><ul id="factsView"></ul><section id="extraView"></section><section id="imagesView" class="images"></section></article></main>
-<aside id="editor" class="editor" hidden><button id="closeEdit">×</button><p>FREE LAYOUT EDITOR</p><label>Lesson title<input id="titleInput"></label><div class="tools"><button data-add="heading">+ Heading</button><button data-add="text">+ Notes</button><button id="addPage">+ Page</button><button id="deleteSelected">Delete selected</button><button id="moveNext">Move selected → next page</button><button id="undoBtn">↶ Undo</button></div><label>Add image<input id="imageInput" type="file" accept="image/*" multiple></label><p class="hint">Select, drag and resize any heading, text or image. Double-click text to edit.</p><div id="canvasViewport"><div id="canvasPages"></div></div><button id="saveNow">Save to TiDB</button></aside>
-<script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Notes PDF Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="textbook.css?v=4" />
+    <style>.subject-workspace{margin:0 0 18px;padding:12px;border:1px solid #dfe4ea;border-radius:9px;background:#f8fafc}.subject-tabs{display:grid;gap:6px;margin:8px 0}.subject-tabs button{padding:8px 10px;background:#e8edf4;color:#243b65;text-align:left;font-size:.82rem}.subject-tabs button.active{background:#233b68;color:#fff}.subject-workspace select{width:100%;margin-top:6px;padding:8px;border:1px solid #cfd6df;border-radius:7px;background:#fff;font:inherit}.subject-workspace #addLessonBtn{width:100%;margin-top:9px}</style>
+    <style>.vault-copy{margin:0 0 18px;color:#6d7787;font-size:.83rem;line-height:1.45}.subject-workspace-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.subject-tabs{grid-template-columns:1fr 1fr 1fr}.subject-tabs button{min-height:66px;padding:10px 8px!important;border:1px solid #d5deea!important;border-radius:8px!important;font-weight:700!important;line-height:1.25!important}.subject-tabs button.active{box-shadow:0 4px 12px #233b6833}.cloud-status{padding:5px 7px;border-radius:99px;background:#e8edf4;color:#50617b;font-size:.68rem;white-space:nowrap}.cloud-status[data-state="saved"]{background:#e5f4e9;color:#18733b}.cloud-status[data-state="error"]{background:#ffe8e8;color:#9c3030}</style>
+    <style>.lock-screen{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 20% 20%,#243b68 0,#121b2e 42%,#090d16 100%);display:grid;place-items:center;padding:24px}.lock-card{width:min(440px,100%);padding:42px;background:#fffdfa;border-radius:18px;box-shadow:0 30px 100px #0008;color:#17233a}.lock-card h1{font:700 2rem Georgia,serif;margin:8px 0}.lock-card p{color:#56637a;line-height:1.55}.lock-card label{display:block;margin:22px 0 12px;font-weight:700}.lock-card input{width:100%;margin-top:7px;padding:12px;border:1px solid #cbd4e0;border-radius:8px;font:inherit}.lock-card button{width:100%;background:#233b68}.lock-card small{display:block;margin-top:16px;color:#77839a;text-align:center}.lock-error{color:#a83232!important;font-weight:700}.library-dashboard{min-height:calc(100vh - 64px);padding:68px max(6vw,32px);background:linear-gradient(150deg,#f4f7fb,#eaf0f8)}.library-hero{max-width:760px;margin-bottom:38px}.library-hero h1{font:700 clamp(2.4rem,5vw,4.7rem)/1 Georgia,serif;letter-spacing:-.04em;margin:10px 0;color:#17233a}.library-hero p:not(.eyebrow){max-width:600px;color:#60708a;font-size:1.05rem;line-height:1.65}.library-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1180px}.library-card{min-height:250px;padding:26px;border:0;border-radius:16px;text-align:left;background:#fff;box-shadow:0 10px 28px #233b6814;color:#17233a}.library-card:nth-child(1){border-top:7px solid #6f78a6}.library-card:nth-child(2){border-top:7px solid #d58c43}.library-card:nth-child(3){border-top:7px solid #447f72}.library-card h2{font:700 1.6rem Georgia,serif;margin:42px 0 10px}.library-card p{color:#68758a;line-height:1.5}.library-card span{display:inline-block;margin-top:20px;font-weight:800;color:#233b68}.reader-mode .editor{display:none}.reader-mode .app-shell{grid-template-columns:minmax(0,1fr)}.reader-mode .preview-wrap{padding-top:30px}.reader-mode [contenteditable="true"]{pointer-events:none;cursor:default}.reader-mode .page-break-tool,.reader-mode .component-toolbar,.reader-mode .break-hint{display:none!important}@media(max-width:850px){.library-cards{grid-template-columns:1fr}.library-dashboard{padding:38px 22px}}</style>
+    <style>.lock-screen[hidden]{display:none}body.dark-mode{--ink:#edf3ff;--muted:#aab7cd;--paper:#141b29;--line:#334159;--navy:#8aa8df;background:#0d1320;color:#edf3ff}.dark-mode .topbar,.dark-mode .editor{background:#141b29}.dark-mode .quiet{background:#26334a;color:#edf3ff}.dark-mode .library-dashboard{background:linear-gradient(150deg,#101827,#18243a)}.dark-mode .library-hero h1,.dark-mode .library-card{color:#edf3ff}.dark-mode .library-card{background:#1a2435;box-shadow:none}.dark-mode .library-card p,.dark-mode .vault-copy{color:#b7c4d8}.dark-mode .subject-workspace,.dark-mode .entry-card{background:#1a2435;border-color:#36445b}.dark-mode .subject-tabs button{background:#26334a;color:#edf3ff!important;border-color:#43526b!important}.dark-mode .subject-workspace select,.dark-mode .editor input,.dark-mode .editor textarea{background:#111927;color:#edf3ff;border-color:#43526b}.dark-mode .page{background:#fffdf7;color:#222}.dark-mode .lock-card{background:#1a2435;color:#edf3ff}.dark-mode .lock-card p{color:#b7c4d8}.dark-mode .lock-card input{background:#111927;color:#edf3ff;border-color:#43526b}</style>
+  </head>
+  <body>
+    <section id="lockScreen" class="lock-screen no-print"><div class="lock-card"><p class="eyebrow">PRIVATE STUDY LIBRARY</p><h1>Samarth’s notes vault</h1><p>Enter your temporary access password to open your learning materials.</p><label>Password<input id="vaultPassword" type="password" autocomplete="current-password" placeholder="Enter password" /></label><button id="unlockVaultBtn" type="button">Open my library</button><p id="lockError" class="lock-error" hidden>Incorrect password. Please try again.</p><small>Temporary local access protection.</small></div></section>
+    <header class="topbar no-print">
+      <div><strong>Samarth’s Study Vault</strong><span id="readerLocation"> Your personal learning library</span></div>
+      <div class="actions">
+        <span class="drive-status" id="cloudTopStatus">Private cloud notes</span>
+        <button id="themeBtn" class="quiet" type="button">Dark mode</button>
+        <button id="homeBtn" class="quiet" type="button">Library</button>
+        <button id="editModeBtn" class="quiet" type="button">Edit lesson</button>
+        <button id="saveBtn" class="quiet">Save draft</button>
+        <button id="exportBtn">Export PDF</button>
+      </div>
+    </header>
+
+    <section id="libraryDashboard" class="library-dashboard no-print" hidden><div class="library-hero"><p class="eyebrow">SAMARTHP2727 · LEARNING MATERIALS</p><h1>A quiet place for your notes.</h1><p>Choose a subject to read your saved lessons. Everything opens in reading mode first.</p></div><div id="libraryCards" class="library-cards"></div></section>
+    <main class="app-shell">
+      <aside class="editor no-print">
+        <div class="panel-heading"><p class="eyebrow">SAMARTHP2727 · STUDY VAULT</p><h1>My permanent notes.</h1><p class="vault-copy">Choose a subject, open any lesson, and continue exactly where you stopped.</p></div>
+        <section class="subject-workspace"><div class="subject-workspace-head"><div><p class="minor-label">MY THREE SUBJECTS</p><strong id="activeSubjectLabel">Operating System</strong></div><span id="cloudStatus" class="cloud-status">Browser backup</span></div><div id="subjectTabs" class="subject-tabs"></div><label>All notes / lessons<select id="lessonSelect"></select></label><button id="addLessonBtn" type="button" class="quiet">+ Add lesson</button></section>
+        <label>Guide title<input id="guideTitle" value="My Daily Notes Guide" /></label>
+        <label>Topic / project name<input id="projectName" value="Personal Learning Journal" /></label>
+        <label>Subtitle<textarea id="subtitle" rows="3">A clear record of progress, daily notes, images and review points.</textarea></label>
+        <label>Section number<input id="sectionNumber" value="1.1" placeholder="Example: 1.1 or Chapter 2" /></label>
+        <label>Section heading<input id="sectionTitle" value="Today’s focus" /></label>
+        <label>Main note<textarea id="mainNote" rows="7">Write the most important idea here. This appears in the same simple, professional guide format as your sample PDF.</textarea></label>
+        <div class="component-palette"><p class="minor-label">ADD COMPONENTS</p><button id="addSamePageSectionBtn" type="button" class="quiet">+ Section on same page</button><button id="addNewPageSectionBtn" type="button" class="quiet">+ Section on new page</button><button id="packSectionsBtn" type="button" class="quiet">Pack all sections together</button><p class="minor-label">PAGE TOOLS</p><button id="insertPageBreakBtn" type="button" class="quiet">↳ Move after cursor to next page</button><button id="moveCurrentSectionBtn" type="button" class="quiet">↳ Move current full section</button><button id="undoPageActionBtn" type="button" class="quiet">↶ Undo page action</button><p>Click inside notes first. You can move only text after the cursor, or the full current section, then undo if needed.</p></div>
+        <label>Key facts (one per line)<textarea id="facts" rows="5">What I learned today
+What I need to practise
+Important definition</textarea></label>
+        <label>Image caption<input id="imageCaption" value="Reference image" /></label>
+        <label class="upload">Add image<input id="imageInput" type="file" accept="image/*" multiple /></label>
+        <div id="imageList" class="image-list"></div>
+        <button id="addUpdateBtn" class="add">+ Add dated update</button>
+        <section id="updatesEditor"></section>
+        <button id="addReviewBtn" class="add">+ Add review point</button>
+        <section id="reviewsEditor"></section>
+        <button id="addSectionBtn" class="add">+ Add a new section page</button>
+        <section id="sectionsEditor"></section>
+        <div class="sync-controls"><label class="toggle"><input id="freeLayout" type="checkbox" /> Free layout: move, resize or delete any component</label><label class="toggle"><input id="includeNotesPage" type="checkbox" /> Include blank notes workspace page</label><label class="toggle"><input id="includeProgressPage" type="checkbox" /> Include dated updates and review page</label><p class="hint">Your editable notes are backed up to your private TiDB cloud database.</p></div>
+        <p class="hint">Every change is saved in this browser immediately. “Export PDF” opens the print dialog: choose <em>Save as PDF</em>.</p>
+      </aside>
+
+      <section class="preview-wrap">
+        <div id="componentToolbar" class="component-toolbar no-print" hidden><span id="componentToolbarText">Selected component</span><button class="move-component" data-move="left" type="button" title="View left workspace">←</button><button class="move-component" data-move="up" type="button" title="Move selected up">↑</button><button class="move-component" data-move="down" type="button" title="Move selected down">↓</button><button class="move-component" data-move="right" type="button" title="View right workspace">→</button><button id="unlinkComponentBtn" type="button" class="quiet">Unlink group</button><button id="deleteComponentBtn" type="button">Delete selected</button></div>
+        <div id="workspaceScroll" class="workspace-scroll no-print" hidden aria-label="Horizontal workspace view"><div id="workspaceScrollTrack"></div></div>
+        <div id="breakHint" class="break-hint no-print" hidden>Break mode: click at the exact point in a note where the next PDF page should begin.</div>
+        <div id="printArea" class="print-area">
+          <article class="page cover-page">
+            <div class="running-header"><span id="previewGuideTitle">My Daily Notes Guide</span><span>Page 1</span></div>
+            <p class="eyebrow">DAILY NOTES & REVIEW GUIDE</p>
+            <h2 id="previewProjectName">Personal Learning Journal</h2>
+            <p id="previewSubtitle" class="lede">A clear record of progress, daily notes, images and review points.</p>
+            <section class="intro-block" data-drag-key="main-section">
+              <div class="section-heading-row"><span id="previewNumber" contenteditable="true">1.1</span><h3 id="previewSectionTitle" contenteditable="true">Today’s focus</h3></div>
+              <p class="minor-label">MAIN IDEA</p>
+              <div id="previewMainNote" class="main-note" contenteditable="true"></div>
+            </section>
+            <div id="inlineSections"></div>
+            <div id="previewFacts" class="facts-grid"></div>
+            <div id="previewImages" class="image-grid"></div>
+          </article>
+          <div id="extraSections"></div>
+
+          <article id="notesPage" class="page notes-page utility-page" hidden>
+            <div class="running-header"><span id="runningProjectName">Personal Learning Journal</span><span>Daily Notes</span></div>
+            <p class="eyebrow">WORKSPACE</p>
+            <h2>Notes to expand later</h2>
+            <div class="lined-notes" aria-label="Blank writing space"></div>
+          </article>
+
+          <article id="updatesPage" class="page updates-page utility-page" hidden>
+            <div class="running-header"><span id="runningProjectName2">Personal Learning Journal</span><span>Updates & review</span></div>
+            <p class="eyebrow">PROGRESS LOG</p>
+            <h2>Daily updates</h2>
+            <div id="previewUpdates" class="timeline"></div>
+            <section class="review-box"><p class="minor-label">REVIEW CHECKLIST</p><h3>Before the next session</h3><div id="previewReviews"></div></section>
+          </article>
+        </div>
+      </section>
+    </main>
+    <template id="updateTemplate"><article class="entry-card"><div class="entry-head"><strong>Daily update</strong><button class="remove" title="Remove">×</button></div><label>Date<input class="update-date" type="date" /></label><label>What changed / what I did<textarea class="update-text" rows="3" placeholder="Write today's progress..."></textarea></label></article></template>
+    <template id="reviewTemplate"><div class="review-edit"><input class="review-text" placeholder="Example: revise this topic tomorrow" /><button class="remove" title="Remove">×</button></div></template>
+    <template id="sectionTemplate"><article class="entry-card"><div class="entry-head"><strong>Added section</strong><button class="remove" title="Remove">×</button></div><label>Section number<input class="extra-number" placeholder="Example: 2.1" /></label><label>Heading<input class="extra-heading" placeholder="Section heading" /></label><label>Notes<textarea class="extra-notes" rows="4" placeholder="Write this section's notes..."></textarea></label><label class="toggle"><input class="show-number" type="checkbox" checked /> Show number box</label><label class="toggle"><input class="show-heading" type="checkbox" checked /> Show heading box</label><label>Place this section<select class="extra-placement"><option value="same">Keep on the same PDF page</option><option value="next">Start on the next PDF page</option></select></label></article></template>
+    <script src="tidb-config.js"></script>
+    <script src="app.js?v=29"></script>
+  </body>
+</html>
